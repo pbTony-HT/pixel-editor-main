@@ -2,7 +2,7 @@
 
 Простой редактор пиксель-арта, созданный на **Vite + React + TypeScript + Tailwind CSS**.
 ## Демо
-🔗 [Открыть редактор](https://pixel-editor-main.vercel.app)
+🔗 [Открыть редактор](https://pixel-editor-mainpbtony.vercel.app)
 
 
 ![Скриншот](./screenshot.png)
