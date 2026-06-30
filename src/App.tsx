@@ -49,6 +49,8 @@ export default function App() {
   const [grid, setGrid] = useState<Grid>(() => loadGridFromStorage() ?? createEmptyGrid())
   const [currentColor, setCurrentColor] = useState(PALETTE[0])
   const [isDrawing, setIsDrawing] = useState(false)   // drag-состояние
+  const [canUndo, setCanUndo] = useState(false)
+  const [canRedo, setCanRedo] = useState(false)
 
   const pastRef = useRef<Grid[]>([])
   const futureRef = useRef<Grid[]>([])
@@ -61,6 +63,8 @@ export default function App() {
   const pushHistory = useCallback((newGrid: Grid) => {
     pastRef.current = [...pastRef.current, copyGrid(grid)]
     futureRef.current = []
+    setCanUndo(true) // после pushHistory всегда можно Undo
+    setCanRedo(false)
     setGrid(newGrid)
   }, [grid])
 
@@ -95,6 +99,8 @@ export default function App() {
     if (pastRef.current.length === 0) return
     const previous = pastRef.current.pop()!
     futureRef.current.push(copyGrid(grid))
+    setCanUndo(pastRef.current.length > 0)
+    setCanRedo(true)
     setGrid(previous)
   }
 
@@ -102,6 +108,8 @@ export default function App() {
     if (futureRef.current.length === 0) return
     const next = futureRef.current.pop()!
     pastRef.current.push(copyGrid(grid))
+    setCanUndo(true)
+    setCanRedo(futureRef.current.length > 0)
     setGrid(next)
   }
 
@@ -195,14 +203,14 @@ export default function App() {
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <button
           onClick={undo}
-          disabled={pastRef.current.length === 0}
+          disabled={!canUndo}
           className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-default rounded text-sm transition"
         >
           Undo
         </button>
         <button
           onClick={redo}
-          disabled={futureRef.current.length === 0}
+          disabled={!canRedo}
           className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-default rounded text-sm transition"
         >
           Redo
