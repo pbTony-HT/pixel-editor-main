@@ -152,15 +152,32 @@ export default function App() {
     }
 
     try {
-      const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
+      // Преобразуем canvas в Blob и копируем в буфер
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, 'image/png')
+      })
+
       if (!blob) {
-        alert('Failed to create image blob')
+        alert('Не удалось создать изображение')
         return
       }
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ])
-      alert('PNG скопирован в буфер обмена!')
+
+      // Проверяем поддержку ClipboardItem
+      if (typeof ClipboardItem !== 'undefined' && navigator.clipboard.write) {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ])
+        alert('PNG скопирован в буфер обмена!')
+      } else {
+        // Fallback: просто скачиваем файл
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'pixel-art.png'
+        link.click()
+        URL.revokeObjectURL(url)
+        alert('Буфер обмена не поддерживается. Изображение сохранено как файл.')
+      }
     } catch (err) {
       console.error('Clipboard write failed', err)
       alert('Не удалось скопировать в буфер обмена')
