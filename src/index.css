@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Адаптивный скейл для редактора */
+@media (max-width: 640px) {
+  .editor-wrapper {
+    transform: scale(0.7);
+    transform-origin: top left;
+    margin-bottom: -60px; /* компенсация уменьшенной высоты */
+  }
+}
+
 body {
   margin: 0;
 }

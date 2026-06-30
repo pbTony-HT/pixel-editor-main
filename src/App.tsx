@@ -220,7 +220,7 @@ export default function App() {
       </div>
 
       {/* Основная рабочая область */}
-      <div className="flex gap-6 items-start">
+      <div className="flex gap-6 items-start editor-wrapper">
         {/* Сетка пикселей */}
         <div
           className="grid select-none border-2 border-gray-500 rounded overflow-hidden bg-gray-800"
